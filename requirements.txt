@@ -1,0 +1,3 @@
+numpy
+scipy
+colour-science==0.3.1
