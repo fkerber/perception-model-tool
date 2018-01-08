@@ -15,40 +15,14 @@ You should have received a copy of the GNU Lesser General Public License
 along with the perception model tool.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
 import math
-import colour
 import numpy as np
+import ntpath
 from scipy import misc, ndimage
 
 from model.perceptual_model import display_center, ObserverSpecification, \
-    DEFAULT_FOVEAL_RESOLUTION, observed_image, make_perpendicular_display
-
-
-def sRGB_to_Lab(r, g, b):
-    XYZ = colour.sRGB_COLOURSPACE.to_XYZ.dot(np.array([r, g, b]))
-    L, a, b = colour.XYZ_to_Lab(XYZ)
-    return L, a, b,
-
-
-def Lab_to_sRGB(L, a, b):
-    XYZ = colour.Lab_to_XYZ(np.array([L, a, b]),
-                            illuminant=colour.ILLUMINANTS.get('CIE 1931 2 Degree Standard Observer').get('D65'))
-    r, g, b = colour.sRGB_COLOURSPACE.to_RGB.dot(XYZ)
-    return r, g, b
-
-
-v_sRGB_to_Lab = np.vectorize(sRGB_to_Lab)
-v_Lab_to_sRGB = np.vectorize(Lab_to_sRGB)
-
-
-def filter_image(image, display, observer):
-    r, g, b = image[..., 0], image[..., 1], image[..., 2]
-    Lab_image = v_sRGB_to_Lab(r, g, b)
-    filtered_luminance = observed_image(Lab_image[0], display, observer)
-    l_image = filtered_luminance, np.zeros(filtered_luminance.shape), np.zeros(filtered_luminance.shape)
-    out_image = v_Lab_to_sRGB(*l_image)
-    return out_image
+    DEFAULT_FOVEAL_RESOLUTION, make_perpendicular_display
+from util import filter_image
 
 
 if __name__ == '__main__':
@@ -74,7 +48,7 @@ if __name__ == '__main__':
     observer_direct = ObserverSpecification(observer_pos, observer_display_dir, DEFAULT_FOVEAL_RESOLUTION)
 
     out_path = OUT_FILE_PATTERN.format("direct")
-    if os.path.exists(out_path):
+    if ntpath.exists(out_path):
         print('Skipped image')
     else:
         out_image = filter_image(image, display, observer_direct)
@@ -85,7 +59,7 @@ if __name__ == '__main__':
     observer_forward = ObserverSpecification(observer_pos, observer_forward_dir, DEFAULT_FOVEAL_RESOLUTION)
 
     out_path = OUT_FILE_PATTERN.format("indirect")
-    if os.path.exists(out_path):
+    if ntpath.exists(out_path):
         print('Skipped image')
     else:
         out_image = filter_image(image, display, observer_forward)
