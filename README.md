@@ -14,4 +14,11 @@ First, an input file (jpg, png) and an output file (jpg, png) to save the adjust
 By pressing the "Process" button, the image is being processed and the adjusted version is saved to the specified output file.
 
 ### Non-GUI version
-The non-GUI version allows to set the parameters mentioned above directly in the code. In this version, images for both, direct and peripheral observation are generated in a single run. 
+```
+python filter_screenshot.py ./image.png ./out.png -d 0.4 -s 0.02 0.02 -r 200 200 -ha 10 -va 20
+```
+
+For a full list of commands see the help page
+```
+python filter_screenshot.py --help
+```

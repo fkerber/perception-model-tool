@@ -16,8 +16,10 @@ along with the perception model tool.  If not, see <http://www.gnu.org/licenses/
 """
 
 import math
-import numpy as np
 import ntpath
+
+import click
+import numpy as np
 from scipy import misc, ndimage
 
 from model.perceptual_model import display_center, ObserverSpecification, \
@@ -25,43 +27,76 @@ from model.perceptual_model import display_center, ObserverSpecification, \
 from util import filter_image
 
 
-if __name__ == '__main__':
-    IMAGE_FILE = './image.png'
-    OUT_FILE_PATTERN = '{}.png'
-
-    image = ndimage.imread(IMAGE_FILE)
+@click.command()
+@click.argument('image_path',
+                type=click.Path(exists=True))
+@click.argument('output_path',
+                type=click.Path())
+@click.option('-d', '--distance',
+              type=float,
+              help='Distance of image to observer (m)')
+@click.option('-s', '--display_size',
+              nargs=2, type=float,
+              help='Display width and height (m)')
+@click.option('-r', '--display_resolution',
+              nargs=2, type=int,
+              help='Display resolution for width and height (px)')
+@click.option('-ha', '--display_h_angle',
+              type=float, default=0,
+              help='Horizontal angle of display (deg)')
+@click.option('-va', '--display_v_angle',
+              type=float, default=0,
+              help='Vertical angle of display (deg)')
+@click.option('--observer_view_direction',
+              nargs=3, type=float, default=None,
+              help='Viewing direction of observer')
+@click.option('--overwrite',
+              is_flag=True,
+              help="Overwrite existing files."
+              )
+def main(image_path, output_path,
+         distance,
+         display_size,
+         display_resolution,
+         display_h_angle,
+         display_v_angle,
+         observer_view_direction,
+         overwrite):
+    image = ndimage.imread(image_path)
 
     observer_pos = np.array([0, 0, 0])
-    DISTANCE = 0.4
-    DISPLAY_SIZE = 0.02, 0.02
-    DISPLAY_RESOLUTION = 200, 200
-    h_angle, v_angle = 10, 20
 
-    display = make_perpendicular_display(DISPLAY_SIZE[0],
-                                         DISPLAY_SIZE[1],
-                                         DISTANCE,
-                                         math.radians(h_angle), math.radians(v_angle),
-                                         DISPLAY_RESOLUTION[0],
-                                         DISPLAY_RESOLUTION[1])
+    display = make_perpendicular_display(display_size[0],
+                                         display_size[1],
+                                         distance,
+                                         math.radians(display_h_angle),
+                                         math.radians(display_v_angle),
+                                         display_resolution[0],
+                                         display_resolution[1])
 
     observer_display_dir = display_center(display) - observer_pos
-    observer_direct = ObserverSpecification(observer_pos, observer_display_dir, DEFAULT_FOVEAL_RESOLUTION)
+    observer_direct = ObserverSpecification(observer_pos, observer_display_dir,
+                                            DEFAULT_FOVEAL_RESOLUTION)
 
-    out_path = OUT_FILE_PATTERN.format("direct")
-    if ntpath.exists(out_path):
-        print('Skipped image')
-    else:
+    if (not overwrite) and ntpath.exists(output_path):
+        print('Image already exists.')
+        return
+
+    if len(observer_view_direction) != 3:
+        print('No valid viewing direction giving. Assuming observer looking '
+              'directly at target.')
         out_image = filter_image(image, display, observer_direct)
-        misc.imsave(out_path, out_image[0])
-        print('Saved image', out_path)
-
-    observer_forward_dir = np.array([0, 1, 0])
-    observer_forward = ObserverSpecification(observer_pos, observer_forward_dir, DEFAULT_FOVEAL_RESOLUTION)
-
-    out_path = OUT_FILE_PATTERN.format("indirect")
-    if ntpath.exists(out_path):
-        print('Skipped image')
     else:
+        observer_forward_dir = np.array([observer_view_direction])
+        observer_forward = ObserverSpecification(observer_pos,
+                                                 observer_forward_dir,
+                                                 DEFAULT_FOVEAL_RESOLUTION)
+
         out_image = filter_image(image, display, observer_forward)
-        misc.imsave(out_path, out_image[0])
-        print('Saved image', out_path)
+
+    misc.imsave(output_path, out_image[0])
+    print('Saved image', output_path)
+
+
+if __name__ == '__main__':
+    main()
