@@ -13,7 +13,7 @@ The tool requires Python 3 in combination with numpy, scipy, click and colour-sc
 First, an input file (jpg, png) and an output file (jpg, png) to save the adjusted version to have to be specified. The parameters allow to specify characteristics of the device under investigation (display size and resolution) as well as the distance and orientation in respect to the observer. A selector gives the option to decide whether the observer is directly looking at the device or whether s/he is looking straight (peripheral observation).
 By pressing the "Process" button, the image is being processed and the adjusted version is saved to the specified output file.
 
-### Non-GUI version
+### Command-line interface (CLI)
 ```
 python filter_screenshot.py ./image.png ./out.png -d 0.4 -s 0.02 0.02 -r 200 200 -ha 10 -va 20
 ```
