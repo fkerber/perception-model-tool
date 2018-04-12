@@ -25,7 +25,7 @@ import ntpath
 import math
 import numpy as np
 
-from model.perceptual_model import display_center, ObserverSpecification, \
+from perceptual_model.perceptual_model import display_center, ObserverSpecification, \
     DEFAULT_FOVEAL_RESOLUTION, make_perpendicular_display
 from util import filter_image
 

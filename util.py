@@ -17,7 +17,7 @@ along with the perception model tool.  If not, see <http://www.gnu.org/licenses/
 
 import colour
 import numpy as np
-from model.perceptual_model import observed_image
+from perceptual_model.perceptual_model import observed_image
 
 
 def sRGB_to_Lab(r, g, b):
