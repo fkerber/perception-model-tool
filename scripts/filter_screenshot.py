@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This file is part of the perception model tool.
 
@@ -24,7 +25,7 @@ from scipy import misc, ndimage
 
 from perceptual_model.perceptual_model import display_center, ObserverSpecification, \
     DEFAULT_FOVEAL_RESOLUTION, make_perpendicular_display
-from util import filter_image
+from scripts.util import filter_image
 
 
 @click.command()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 This file is part of the perception model tool.
@@ -33,7 +33,15 @@ setup(name='perception-model',
       author_email='fkerber@gmail.com',
       url='https://github.com/fkerber/perception-model-tool',
       license='GNU Lesser General Public License v3.0',
-      packages=['perceptual_model'],
+      entry_points={
+      'console_scripts': [
+                          'filter_screenshot=scripts.filter_screenshot:main',
+                          ],
+      'gui_scripts': [
+                      'filter_screenshot_gui=scripts.filter_screenshot_gui:main',
+                          ],
+      },
+      packages=['perceptual_model', 'scripts'],
       install_requires=['numpy','scipy', 'colour-science', 'click'],
       python_requires='>=3',
      )

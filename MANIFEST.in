@@ -2,5 +2,9 @@ include MANIFEST.in
 include README.md
 include LICENSE
 include setup.py
+include scripts/__init__.py
+include scripts/filter_screenshot.py
+include scripts/filter_screenshot_gui.py
+include scripts/util.py
 include perceptual_model/__init__.py
 include perceptual_model/perceptual_model.py

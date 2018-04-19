@@ -27,8 +27,11 @@ import numpy as np
 
 from perceptual_model.perceptual_model import display_center, ObserverSpecification, \
     DEFAULT_FOVEAL_RESOLUTION, make_perpendicular_display
-from util import filter_image
+from scripts.util import filter_image
 
+
+def main():
+    MyFrame().mainloop()
 
 class MyFrame(Frame):
 
@@ -183,4 +186,4 @@ class MyFrame(Frame):
 
 
 if __name__ == "__main__":
-    MyFrame().mainloop()
+    main()
